@@ -13,7 +13,6 @@ impl ShaderProgram {
         fragment_shader_src: &str,
     ) -> Result<Self, String> {
         unsafe {
-            // コンパイルエラーやリンクエラーをキャッチするためのクロージャ
             let compile_shader =
                 |gl: &glow::Context, shader_type, src: &str| -> Result<glow::Shader, String> {
                     let shader = gl.create_shader(shader_type)?;
@@ -28,7 +27,6 @@ impl ShaderProgram {
             let vertex_shader = compile_shader(&gl, glow::VERTEX_SHADER, vertex_shader_src)?;
             let fragment_shader = compile_shader(&gl, glow::FRAGMENT_SHADER, fragment_shader_src)?;
 
-            // プログラムのリンク
             let program = gl.create_program()?;
             gl.attach_shader(program, vertex_shader);
             gl.attach_shader(program, fragment_shader);
@@ -38,7 +36,6 @@ impl ShaderProgram {
                 return Err(gl.get_program_info_log(program));
             }
 
-            // シェーダーオブジェクトはもう不要なので削除
             gl.detach_shader(program, vertex_shader);
             gl.detach_shader(program, fragment_shader);
             gl.delete_shader(vertex_shader);
@@ -48,7 +45,6 @@ impl ShaderProgram {
         }
     }
 
-    // プログラムの使用を開始
     pub fn use_program(&self) {
         unsafe {
             self.gl.use_program(Some(self.program));

@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use anyhow::Result as Resilt;
+use anyhow::Result;
 use glow::*;
 use thiserror::Error;
 
@@ -21,7 +21,7 @@ pub enum AppError {
 
 pub struct AppRunner {}
 impl AppRunner {
-    pub fn start<A: App>() -> Resilt<(), AppError> {
+    pub fn run<A: App>() -> Result<(), AppError> {
         unsafe {
             #[cfg(feature = "glutin_winit")]
             let (gl, gl_surface, gl_context, _window, event_loop) = {

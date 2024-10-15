@@ -61,5 +61,5 @@ impl App for MyApp {
 }
 
 fn main() {
-    AppRunner::start::<MyApp>().unwrap();
+    AppRunner::run::<MyApp>().unwrap();
 }
