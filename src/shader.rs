@@ -1,12 +1,12 @@
 use glow::HasContext;
 use std::rc::Rc;
 
-pub struct ShaderProgram {
+pub struct Shader {
     gl: Rc<glow::Context>,
     program: glow::Program,
 }
 
-impl ShaderProgram {
+impl Shader {
     pub fn new(
         gl: Rc<glow::Context>,
         vertex_shader_src: &str,
@@ -45,14 +45,20 @@ impl ShaderProgram {
         }
     }
 
-    pub fn use_program(&self) {
+    pub fn bind(&self) {
         unsafe {
             self.gl.use_program(Some(self.program));
         }
     }
+
+    pub fn unbind(&self) {
+        unsafe {
+            self.gl.use_program(None);
+        }
+    }
 }
 
-impl Drop for ShaderProgram {
+impl Drop for Shader {
     fn drop(&mut self) {
         unsafe {
             self.gl.delete_program(self.program);

@@ -7,7 +7,6 @@ pub struct VAO {
 }
 
 impl VAO {
-    // VAOの作成
     pub fn new(gl: Rc<glow::Context>) -> Self {
         unsafe {
             let vao = gl.create_vertex_array().expect("Failed to create VAO");
@@ -16,14 +15,12 @@ impl VAO {
         }
     }
 
-    // VAOをバインド
     pub fn bind(&self) {
         unsafe {
             self.gl.bind_vertex_array(Some(self.vao));
         }
     }
 
-    // VAOをアンバインド
     pub fn unbind(&self) {
         unsafe {
             self.gl.bind_vertex_array(None);
@@ -32,7 +29,6 @@ impl VAO {
 }
 
 impl Drop for VAO {
-    // VAOの削除
     fn drop(&mut self) {
         unsafe {
             self.gl.delete_vertex_array(self.vao);

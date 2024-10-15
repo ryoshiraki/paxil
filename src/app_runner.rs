@@ -1,7 +1,6 @@
-use std::rc::Rc;
-
+use super::app_config::AppConfig;
 use anyhow::Result;
-use glow::*;
+use std::rc::Rc;
 use thiserror::Error;
 
 pub trait App: Sized {
@@ -21,8 +20,29 @@ pub enum AppError {
 
 pub struct AppRunner {}
 impl AppRunner {
-    pub fn run<A: App>() -> Result<(), AppError> {
+    pub fn run<A: App>(app_config: AppConfig) -> Result<(), AppError> {
         unsafe {
+            // #[cfg(target_arch = "wasm32")]
+            // let (gl, shader_version) = {
+            //     use wasm_bindgen::JsCast;
+            //     let canvas = web_sys::window()
+            //         .unwrap()
+            //         .document()
+            //         .unwrap()
+            //         .get_element_by_id("canvas")
+            //         .unwrap()
+            //         .dyn_into::<web_sys::HtmlCanvasElement>()
+            //         .unwrap();
+            //     let webgl2_context = canvas
+            //         .get_context("webgl2")
+            //         .unwrap()
+            //         .unwrap()
+            //         .dyn_into::<web_sys::WebGl2RenderingContext>()
+            //         .unwrap();
+            //     let gl = glow::Context::from_webgl2_context(webgl2_context);
+            //     (gl, "#version 300 es")
+            // };
+
             #[cfg(feature = "glutin_winit")]
             let (gl, gl_surface, gl_context, _window, event_loop) = {
                 use glutin::{
@@ -38,8 +58,11 @@ impl AppRunner {
 
                 let event_loop = winit::event_loop::EventLoopBuilder::new().build().unwrap();
                 let window_builder = winit::window::WindowBuilder::new()
-                    .with_title("Hello, world!")
-                    .with_inner_size(winit::dpi::LogicalSize::new(1024.0, 768.0));
+                    .with_title(&app_config.window_title)
+                    .with_inner_size(winit::dpi::LogicalSize::new(
+                        app_config.window_width as f64,
+                        app_config.window_height as f64,
+                    ));
 
                 let template = ConfigTemplateBuilder::new();
 
@@ -65,8 +88,8 @@ impl AppRunner {
                 let gl_display = gl_config.display();
                 let context_attributes = ContextAttributesBuilder::new()
                     .with_context_api(ContextApi::OpenGl(Some(glutin::context::Version {
-                        major: 4,
-                        minor: 1,
+                        major: app_config.gl_version_major,
+                        minor: app_config.gl_version_minor,
                     })))
                     .build(raw_window_handle);
 

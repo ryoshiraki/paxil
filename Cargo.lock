@@ -690,6 +690,7 @@ dependencies = [
  "glow",
  "glutin",
  "glutin-winit",
+ "log",
  "raw-window-handle 0.5.2",
  "thiserror",
  "wasm-bindgen",
