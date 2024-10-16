@@ -15,3 +15,6 @@ pub use texture::*;
 
 pub mod utils;
 pub use utils::*;
+
+pub mod image;
+pub use image::*;
